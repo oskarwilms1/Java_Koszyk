@@ -6,7 +6,6 @@ import org.junit.*;
 
 public class PromotionManagerTest {
     private Cart cart = new Cart();
-    private PromotionManager promotionManager = new PromotionManager();
 
     @Test
     public void testVolumeDiscount() {
@@ -38,15 +37,16 @@ public class PromotionManagerTest {
 
     @Test
     public void testOneTimeDiscountCoupon() {
-
-        cart.addProduct(new Product("P004", "Product 4", 10));
-        cart.addProduct(new Product("P001", "Product 1", 100));
-        cart.addProduct(new Product("P002", "Product 2", 30));
-        
-
+        Product Product1 = new Product("P001", "Product 1", 100);
+        Product Product2 = new Product("P002", "Product 2", 30);
+        Product Product4 = new Product("P004", "Product 4", 10);
+        cart.addProduct(Product4);
+        cart.addProduct(Product1);
+        cart.addProduct(Product2);
+        cart.applyOneTimePromotion(Product1);
         double total = cart.calculateTotal();
 
-        assertEquals(110.0, total, 0.01);
+        assertEquals(100.0, total, 0.01);
     }
 
     

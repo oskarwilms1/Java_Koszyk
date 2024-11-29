@@ -16,10 +16,8 @@ public class PromotionManager {
             products[i].resetDiscount();
         }
     }
-    public void applyOneTimePromotion(Cart cart,String code){
-
-        Product product = Finder.FindProductFromCode(cart,code);
-        if (product != null){
+    public void applyOneTimePromotion(Cart cart,Product product){
+        if (Finder.IsIn(cart,product)){
             product.applyDiscount(0.3);
         }
     }
@@ -44,8 +42,9 @@ public class PromotionManager {
     }
 
     private void applyCupPromotion(Cart cart) {
-        if (cart.calculateTotal() > 200 && Finder.IsIn(cart, "CUP001") == false){
-            Product cup = new Product("CUP001", "Firmowy Kubek", 0);
+        Product cup = new Product("CUP001", "Firmowy Kubek", 0);
+        if (cart.calculateTotal() > 200 && Finder.IsIn(cart, cup) == false){
+            
             cart.addProduct(cup); 
         }
     }

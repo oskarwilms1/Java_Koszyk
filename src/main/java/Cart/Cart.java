@@ -8,12 +8,13 @@ public class Cart {
     private Comparator CartComparator = new DefaultComparator();
     private PromotionManager promotionManager = new PromotionManager();
     private SortManager SortManager = new SortManager();
+    private ProductFinder Finder = new ProductFinder();
 
     public Cart() {
         this.products = new Product[0];
         this.productCount = 0;
     }
-    public void add(Product product){
+    private void add(Product product){
         products[productCount] = product;
         productCount++;
     }
@@ -39,10 +40,28 @@ public class Cart {
         }
         return total;
     }
-    public void applyPromotions() {
+    public Product getCheapest(){
+        return Finder.FindCheapest(this);
+    }
+    public Product getMostExpensive(){
+        return Finder.FindMostExpensive(this);
+    }
+    public Product[] getNCheapest(int n){
+        return Finder.FindNCheapest(this,n);
+    }
+    public Product[] getNMostExpensive(int n){
+        return Finder.FindNMostExpensive(this, n);
+    }
+    private void applyPromotions() {
         promotionManager.applyPromotions(this);
     }
-    public Comparator getComparator(){
+    public void applyOneTimePromotion(Product product){
+        promotionManager.applyOneTimePromotion(this, product);
+    }
+    public void setComparator(Comparator<Product> comparator){
+        this.CartComparator = comparator;
+    }
+    public Comparator<Product> getComparator(){
         return this.CartComparator;
     }
     public Product[] getProducts() {
@@ -52,19 +71,25 @@ public class Cart {
     }
 
     public void sort(){
-        SortManager.sort(this);
+        this.products=SortManager.sort(this);
     }
     public int getProductCount() {
         return productCount;
     }
-
-    public void removeProduct(Product product) {
+    private void remove(Product product){
         for (int i = 0; i < productCount; i++) {
             if (products[i].equals(product)) {
                 System.arraycopy(products, i + 1, products, i, productCount - i - 1);
-                products[--productCount] = null;
+                products[productCount-1] = null;
                 break;
-            }
+                }
         }
+    }
+
+    public void removeProduct(Product product) {
+        remove(product);
+        productCount--;
+        applyPromotions();
+        sort();
     }
 }
